@@ -1,0 +1,49 @@
+stages:
+  ingestion:
+    cmd: python3 script/data_ingestion.py
+    outs:
+      - dataset/data.csv
+
+  preprocess:
+    cmd: python3 script/data_preprocessing.py
+    deps:
+      - dataset/data.csv
+      - script/data_preprocessing.py
+      - config.yaml
+    outs:
+      - dataset/train.csv
+      - dataset/validation.csv
+      - dataset/test.csv
+
+  trainer:
+    cmd: python3 script/data_trainer.py
+    deps:
+      - dataset/train.csv
+      - dataset/validation.csv
+      - script/data_trainer.py
+      - config.yaml
+    outs:
+      - model.pkl
+
+  tester:
+    cmd: python3 script/data_test.py
+    deps:
+      - dataset/test.csv
+      - model.pkl
+      - script/data_test.py
+      - config.yaml
+    outs:
+      - result.json
+
+  register:
+    cmd: python3 script/mlflow_registry.py
+    deps:
+      - model.pkl
+      - config.yaml
+      - script/mlflow_registry.py
+
+  s3_upload:
+    cmd: python3 script/s3_upload.py
+    deps:
+      - config.yaml
+      - script/s3_upload.py

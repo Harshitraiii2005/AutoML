@@ -1,0 +1,9 @@
+torch
+transformers
+peft
+datasets
+prefect
+pymongo
+boto3
+scikit-learn
+rouge_score
