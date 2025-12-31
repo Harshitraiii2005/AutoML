@@ -1,0 +1,20 @@
+stages:
+  start_services:
+    cmd: bash script/start_services.sh
+    outs:
+      - mlflow.log
+      - prefect.log
+
+  running_dvc:
+    cmd: |
+      echo "running dvc for test run"
+      dvc repro -f dvc.yaml
+    outs:
+      - dvc.lock
+
+  running_prefect:
+    cmd: |
+      python3 runner.py
+      touch prefect_run_success
+    outs:
+      - prefect_run_success
