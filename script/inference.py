@@ -4,22 +4,15 @@ import yaml
 import argparse
 import mlflow
 import mlflow.pyfunc
-from typing import List
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 from peft import PeftModel
 
 
-# ---------------------------
-# Config
-# ---------------------------
 def load_config(path="config.yaml"):
     with open(path, "r") as f:
         return yaml.safe_load(f)
 
 
-# ---------------------------
-# MLflow PyFunc Model
-# ---------------------------
 class QuestionGenerator(mlflow.pyfunc.PythonModel):
 
     def load_context(self, context):
@@ -84,9 +77,6 @@ class QuestionGenerator(mlflow.pyfunc.PythonModel):
         return results
 
 
-# ---------------------------
-# Local inference helper
-# ---------------------------
 def local_inference(text: str):
     config = load_config()
 
@@ -110,9 +100,6 @@ def local_inference(text: str):
     print(tokenizer.decode(outputs[0], skip_special_tokens=True))
 
 
-# ---------------------------
-# Main
-# ---------------------------
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--text", type=str)
@@ -124,14 +111,13 @@ if __name__ == "__main__":
     mlflow.set_experiment(config["mlflow_experiment_name"])
 
     with mlflow.start_run(run_name="model_inference"):
-
         if args.log_model:
             mlflow.pyfunc.log_model(
                 artifact_path="question_generator",
                 python_model=QuestionGenerator(),
                 artifacts={"model": config["output_dir"]},
             )
-            print("✅ MLflow PyFunc model logged")
+            print("MLflow PyFunc model logged")
 
         if args.text:
             local_inference(args.text)

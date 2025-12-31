@@ -106,7 +106,7 @@ def s3_upload_task(config):
     if config.get("use_s3", False):
         logger.info("Uploading model to S3...")
         upload_s3(config)
-        logger.info("✅ Model uploaded to S3")
+        logger.info("Model uploaded to S3")
     else:
         logger.info("S3 upload skipped (use_s3=False)")
 
@@ -129,5 +129,5 @@ def ml_pipeline():
 
 
 
-if __name__ == "__main__":
-    ml_pipeline()
+
+ml_pipeline()

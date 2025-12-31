@@ -1,20 +1,26 @@
-# Model Configuration
-model_name: "google/flan-t5-small"
-use_lora: true
+model_name: "t5-small"           
+use_lora: false                  
 lora_r: 8
 lora_alpha: 32
 lora_dropout: 0.05
-target_modules: ["q", "v"]
+target_modules: ["q", "v"]       
+output_dir: "artifacts/model"    
+max_input_length: 512
+max_target_length: 128
 
-# Data Configuration
+
 data_path: "dataset/data.csv"
+train_path: "dataset/train.csv"
+val_path: "dataset/validation.csv"
+test_path: "dataset/test.csv"
 train_split: 0.8
 val_split: 0.1
 test_split: 0.1
-max_input_length: 1024
-max_target_length: 256
+train_subset_size: 5000   
+val_subset_size: 1000
+model_artifact_path: "model"
 
-# Training Configuration
+
 batch_size: 1
 gradient_accumulation_steps: 16
 num_epochs: 1
@@ -26,40 +32,24 @@ save_steps: 500
 save_total_limit: 2
 fp16: false
 eval_steps: 50
-max_input_length: 512
-max_target_length: 128
-output_dir: "tmp_trainer"
-model_name: "t5-small"
-use_lora: false
-train_subset_size: 5000   # subset of train for faster CPU training
-val_subset_size: 1000     # subset of validation
-mlflow_tracking_uri: "http://localhost:5090"
-mlflow_experiment_name: "AutoML"
 
 
-# MLflow Configuration
 mlflow_tracking_uri: "http://localhost:5090"
-mlflow_experiment_name: "question_generation"
+mlflow_experiment_name: "question-generation"
 register_model: true
 model_registry_stage: "Staging"
 
-# S3 Configuration (optional)
+
+
 use_s3: true
-
 s3:
-  bucket: auto-bucket
-  model_path: ${S3_MODEL_PATH}
-  region: ${AWS_REGION}
+  bucket: "auto-bucket"
+  model_path: "model.pkl"
+  region: "us-east-1"
 
-model_name: automl_model
-mlflow_experiment: registry
-# Output Configuration
-output_dir: "./flan_t5_lora_qgen"
+aws_access_key_id: "add access key"
+aws_secret_access_key: "add secret access key"
+aws_bucket_name: "auto-bucket"
+aws_region: "us-east-1"  
+
 model_archive_name: "model_package.zip"
-model_name: t5-small
-output_dir: artifacts/model
-use_lora: true
-max_input_length: 512
-max_target_length: 128
-mlflow_tracking_uri: http://localhost:5090
-mlflow_experiment_name: question-gen

@@ -60,7 +60,7 @@ def evaluate_model():
             json.dump(metrics, f, indent=4)
 
         mlflow.log_artifact("result.json")
-        print("📊 Evaluation:", metrics)
+        print("Evaluation:", metrics)
 
 
 if __name__ == "__main__":

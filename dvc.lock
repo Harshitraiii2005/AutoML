@@ -1,0 +1,100 @@
+schema: '2.0'
+stages:
+  ingestion:
+    cmd: python3 script/data_ingestion.py
+    outs:
+    - path: dataset/data.csv
+      hash: md5
+      md5: 0fc85df85297afe51ea356e488ca02de
+      size: 136260099
+  preprocess:
+    cmd: python3 script/data_preprocessing.py
+    deps:
+    - path: config.yaml
+      hash: md5
+      md5: 2f4c7cc5382e8a8aa46d5b6b2174122b
+      size: 1454
+    - path: dataset/data.csv
+      hash: md5
+      md5: 0fc85df85297afe51ea356e488ca02de
+      size: 136260099
+    - path: script/data_preprocessing.py
+      hash: md5
+      md5: 65d0083be1f268b74bc13b078a9d333d
+      size: 2036
+    outs:
+    - path: dataset/test.csv
+      hash: md5
+      md5: dd97c700a22e49c16c43e7e28c37ba41
+      size: 21507807
+    - path: dataset/train.csv
+      hash: md5
+      md5: 114d76d5f195b0ec56d78e7591bb40b3
+      size: 172099760
+    - path: dataset/validation.csv
+      hash: md5
+      md5: 7970857f6404dc3372d5e8153c8863d3
+      size: 21529281
+  trainer:
+    cmd: python3 script/data_trainer.py
+    deps:
+    - path: config.yaml
+      hash: md5
+      md5: 2f4c7cc5382e8a8aa46d5b6b2174122b
+      size: 1454
+    - path: dataset/train.csv
+      hash: md5
+      md5: 114d76d5f195b0ec56d78e7591bb40b3
+      size: 172099760
+    - path: dataset/validation.csv
+      hash: md5
+      md5: 7970857f6404dc3372d5e8153c8863d3
+      size: 21529281
+    - path: script/data_trainer.py
+      hash: md5
+      md5: 4b42f47a95464a88865921ee7cd72b11
+      size: 4027
+    outs:
+    - path: model.pkl
+      hash: md5
+      md5: 83ebb808c34100ec383917c20aed1698
+      size: 243503850
+  tester:
+    cmd: python3 script/data_test.py
+    deps:
+    - path: config.yaml
+      hash: md5
+      md5: 2f4c7cc5382e8a8aa46d5b6b2174122b
+      size: 1454
+    - path: dataset/test.csv
+      hash: md5
+      md5: dd97c700a22e49c16c43e7e28c37ba41
+      size: 21507807
+    - path: model.pkl
+      hash: md5
+      md5: 83ebb808c34100ec383917c20aed1698
+      size: 243503850
+    - path: script/data_test.py
+      hash: md5
+      md5: 32674ecffe96eb05dea16adaeb6d7c0c
+      size: 1748
+    outs:
+    - path: result.json
+      hash: md5
+      md5: 3466f923fa7b81385525a260a733da93
+      size: 81
+  register:
+    cmd: python3 script/mlflow_registry.py
+    deps:
+    - path: config.yaml
+      hash: md5
+      md5: 2f4c7cc5382e8a8aa46d5b6b2174122b
+      size: 1454
+    - path: model.pkl
+      hash: md5
+      md5: 83ebb808c34100ec383917c20aed1698
+      size: 243503850
+    - path: script/mlflow_registry.py
+      hash: md5
+      md5: 72006d438d3cc5dc26f7cdffed10dba7
+      size: 1158

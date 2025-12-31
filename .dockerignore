@@ -1,0 +1,55 @@
+astro
+.git
+.env
+airflow_settings.yaml
+logs/
+.venv
+airflow.db
+airflow.cfg
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+
+# Virtual environments
+venv/
+.venv/
+airflow-venv/
+
+# DVC
+.dvc/
+.dvc/cache/
+
+# Data & Models
+dataset/
+data/
+*.csv
+*.parquet
+*.json
+*.pkl
+model.pkl
+
+# MLflow
+mlruns/
+mlflow.db
+artifacts/
+
+# HuggingFace / Transformers
+hf_model/
+.cache/
+.cache/huggingface/
+
+# Git
+.git/
+.gitignore
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large outputs
+output/
+outputs/
+tmp/

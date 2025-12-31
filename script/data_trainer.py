@@ -23,17 +23,14 @@ def load_config(path="config.yaml"):
         return yaml.safe_load(f)
 
 
-
-
 class QuestionGeneratorWrapper(mlflow.pyfunc.PythonModel):
     def load_context(self, context):
-        import pickle
         with open("model.pkl", "rb") as f:
             self.model_bundle = pickle.load(f)
 
     def predict(self, context, model_input):
-        # Implement prediction logic using self.model_bundle
         return self.model_bundle["model"].generate(model_input)
+
 
 class PandasDataset(Dataset):
     def __init__(self, encodings):
@@ -49,7 +46,7 @@ class PandasDataset(Dataset):
 def tokenize(tokenizer, df, config):
     if "input_text" not in df.columns or "target_text" not in df.columns:
         raise KeyError("Dataframe must contain 'input_text' and 'target_text' columns")
-    
+
     inputs = ["Generate 5 questions: " + str(t) for t in df["input_text"]]
     targets = df["target_text"].astype(str).tolist()
 
@@ -72,7 +69,6 @@ def tokenize(tokenizer, df, config):
 
 
 def train_model(config):
-    # MLflow setup
     mlflow.set_tracking_uri(config["mlflow_tracking_uri"])
     mlflow.set_experiment(config["mlflow_experiment_name"])
 
@@ -83,7 +79,7 @@ def train_model(config):
         raise FileNotFoundError("Train or validation CSV not found")
 
     train_df = pd.read_csv(train_path).sample(n=2000, random_state=42)
-    val_df   = pd.read_csv(val_path).sample(n=2000, random_state=42)
+    val_df = pd.read_csv(val_path).sample(n=2000, random_state=42)
 
     model_name = config.get("model_name", "t5-small")
     tokenizer = AutoTokenizer.from_pretrained(model_name)
@@ -116,24 +112,21 @@ def train_model(config):
     with mlflow.start_run(run_name="model_training", nested=True):
         trainer.train()
 
-        # Save Hugging Face model
         model_dir = "hf_model"
         model.save_pretrained(model_dir)
         tokenizer.save_pretrained(model_dir)
 
-        mlflow.log_artifacts(model_dir)  # Log all HF model files
+        mlflow.log_artifacts(model_dir)
 
-        # Save pickle
         with open("model.pkl", "wb") as f:
             pickle.dump({"model": model, "tokenizer": tokenizer}, f)
 
-        mlflow.log_artifact("model.pkl")  # Still log pickle
+        mlflow.log_artifact("model.pkl")
 
-        # ✅ Log PyFunc model for registry
         mlflow.pyfunc.log_model(
-            artifact_path="model",           # This is the artifact_path used for registry
+            artifact_path="model",
             python_model=QuestionGeneratorWrapper()
         )
 
-    print("✅ Training finished and PyFunc model logged")
-    return "model"  # <- return the PyFunc model path for registry
+    print("Training finished and PyFunc model logged")
+    return "model"
