@@ -24,7 +24,7 @@ pipeline {
                     $PYTHON_VERSION -m venv $VENV_NAME
                 fi
 
-                source $VENV_NAME/bin/activate
+                .   $VENV_NAME/bin/activate
                 pip install --upgrade pip
 
                 echo "Installing project requirements"
@@ -40,7 +40,7 @@ pipeline {
             steps {
                 sh '''
                 set -e
-                source $VENV_NAME/bin/activate
+                .   $VENV_NAME/bin/activate
                 dvc pull
                 '''
             }
@@ -50,7 +50,7 @@ pipeline {
             steps {
                 sh '''
                 set -e
-                source $VENV_NAME/bin/activate
+                .   $VENV_NAME/bin/activate
                 dvc repro
                 '''
             }
