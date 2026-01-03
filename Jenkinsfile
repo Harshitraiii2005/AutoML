@@ -55,6 +55,15 @@ pipeline {
                 '''
             }
         }
+
+        stage('Build Docker Image') {
+            steps {
+                sh '''
+                set -e
+                docker build -t automl-app .
+                '''
+            }
+        }
     }
 
     post {

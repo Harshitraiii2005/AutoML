@@ -13,6 +13,55 @@ __pycache__/
 *.pyd
 *.log
 
+.git
+__pycache__/
+*.pt
+*.pkl
+*.joblib
+data/
+datasets/
+mlruns/
+venv/
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.venv
+venv/
+
+# Git
+.git/
+.gitignore
+
+# ML / Data
+dataset/
+datasets/
+data/
+mlruns/
+wandb/
+checkpoints/
+models/
+hf_model/
+*.pt
+*.bin
+*.ckpt
+*.pkl
+
+# DVC
+.dvc/
+.dvc/cache/
+
+# OS
+.DS_Store
+
+# Docker
+Dockerfile
+docker-compose.yml
+
 # Virtual environments
 venv/
 .venv/

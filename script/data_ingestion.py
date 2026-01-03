@@ -3,7 +3,7 @@ import pandas as pd
 import os
 from pymongo import MongoClient
 
-MONGO_URI = "add mongo url"
+MONGO_URI = "mongodb+srv://2023267885harshit:vcrFCcq9LlQsxx58@datacluster.bs9u2kf.mongodb.net/?appName=datacluster"
 DB_NAME = "automl_db"
 COLLECTION_NAME = "dataset"
 

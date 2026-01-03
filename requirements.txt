@@ -1,4 +1,5 @@
-torch
+torch==2.1.2
+
 transformers
 peft
 datasets
@@ -7,3 +8,7 @@ pymongo
 boto3
 scikit-learn
 rouge_score
+flask
+gunicorn
+joblib
+nltk
