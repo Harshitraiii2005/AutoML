@@ -1,13 +1,16 @@
-torch==2.1.2
+numpy<2
 
-transformers
-peft
-datasets
+torch==2.1.2
+transformers==4.36.2
+peft==0.7.1
+datasets==2.16.1
+
 prefect
 pymongo
 boto3
 scikit-learn
 rouge_score
+
 flask
 gunicorn
 joblib

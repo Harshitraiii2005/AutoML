@@ -4,6 +4,8 @@ pipeline {
     environment {
         VENV_NAME = "automl-venv"
         PYTHON_VERSION = "python3"
+        IMAGE_NAME = "harshitrai20/automl"
+        IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
     stages {
@@ -18,19 +20,12 @@ pipeline {
             steps {
                 sh '''
                 set -e
-
                 if [ ! -d "$VENV_NAME" ]; then
-                    echo "Creating virtual environment"
                     $PYTHON_VERSION -m venv $VENV_NAME
                 fi
-
-                .   $VENV_NAME/bin/activate
+                . $VENV_NAME/bin/activate
                 pip install --upgrade pip
-
-                echo "Installing project requirements"
                 pip install -r requirements.txt
-
-                echo "Installing ML tools"
                 pip install dvc[all] prefect mlflow
                 '''
             }
@@ -40,7 +35,7 @@ pipeline {
             steps {
                 sh '''
                 set -e
-                .   $VENV_NAME/bin/activate
+                . $VENV_NAME/bin/activate
                 dvc pull
                 '''
             }
@@ -50,7 +45,7 @@ pipeline {
             steps {
                 sh '''
                 set -e
-                .   $VENV_NAME/bin/activate
+                . $VENV_NAME/bin/activate
                 dvc repro
                 '''
             }
@@ -59,8 +54,17 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh '''
-                set -e
-                docker build -t automl-app .
+                docker build -t $IMAGE_NAME:$IMAGE_TAG .
+                '''
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                sh '''
+                docker tag $IMAGE_NAME:$IMAGE_TAG $IMAGE_NAME:latest
+                docker push $IMAGE_NAME:$IMAGE_TAG
+                docker push $IMAGE_NAME:latest
                 '''
             }
         }
@@ -68,13 +72,13 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline executed successfully'
+            echo 'CI pipeline executed successfully'
         }
         failure {
-            echo 'Pipeline failed'
+            echo 'CI pipeline failed'
         }
         always {
-            echo 'CI/CD run completed'
+            echo 'CI run completed'
         }
     }
 }
